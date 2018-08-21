@@ -27,7 +27,7 @@
             }
         },
         mounted () {
-            if (!VueCookie.get('token')) {
+            if (!VueCookie.get('access_token')) {
                 // TODO :: Redirect to LINE login
                 console.log('This is login component')
                 var channelId = '1601887173'
