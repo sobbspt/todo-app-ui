@@ -4,11 +4,13 @@
             <draggable class="list-group" element="ul" v-model="todo_array" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
                 <transition-group type="transition" :name="'flip-list'">
                     <li class="list-group-item" v-for="element in todo_array" :key="element.order">
-                        <i :class="element.isDone? 'fa fa-check-square-o' : 'fa fa-square-o'" @click=" element.isDone=! element.isDone" aria-hidden="true"></i>
-                        {{element.taskName}}
-                        <span class="badge">{{element.order}}</span>
-                        {{ element }}
-                        <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.isPinned=! element.isPinned" aria-hidden="true"></i>
+                        <span>
+                            <i :class="element.isDone? 'fa fa-check-square-o green' : 'fa fa-square-o'" @click="doneHandler(element)" aria-hidden="true"></i>
+                            [ {{ formatDate(element.date) }} ]
+                            {{element.taskName}}
+                            <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.isPinned = !element.isPinned" aria-hidden="true"></i>
+                        </span>
+
                     </li>
                 </transition-group>
             </draggable>
@@ -45,6 +47,21 @@
                 return (
                     (!relatedElement || !relatedElement.isPinned) && !draggedElement.isPinned
                 );
+            },
+            formatDate(dateStr) {
+                var date = new Date(dateStr)
+                return date.toDateString() + ' ' + date.toLocaleTimeString()
+            },
+            doneHandler(todo) {
+                todo.isDone = !todo.isDone
+                this.updateTodo(todo)
+            },
+            updateTodo(todo) {
+                api.put('/api/v1/users/' + this.userId + '/todos/' + todo.id, todo, { headers: {  } }).then(response => {
+                    console.log(response.data)
+                }, (error) => {
+                    alert('Cannot update')
+                })
             }
         },
         mounted () {
@@ -84,7 +101,7 @@
                     disabled: !this.editable,
                     ghostClass: "ghost"
                 };
-            }
+            },
         },
         watch: {
             isDragging(newValue) {
@@ -119,5 +136,8 @@
     }
     .list-group-item i {
         cursor: pointer;
+    }
+    .green {
+        color: #079100;
     }
 </style>
