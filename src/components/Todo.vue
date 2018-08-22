@@ -9,6 +9,7 @@
                             [ {{ formatDate(element.date) }} ]
                             {{element.taskName}}
                             <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click="pinnedHandler(element)" aria-hidden="true"></i>
+                            {{element.order}}
                         </span>
 
                     </li>
@@ -22,7 +23,8 @@
     import VueCookie from 'cookie-in-vue'
     import lineapi from '../services/lineapi'
     import draggable from 'vuedraggable'
-    import api from "../services/api";
+    import api from "../services/api"
+    import Vue from 'vue'
 
     export default {
         name: 'todo',
@@ -45,9 +47,9 @@
                 const relatedElement = relatedContext.element;
                 const draggedElement = draggedContext.element;
                 var move = ((!relatedElement || !relatedElement.isPinned) && !draggedElement.isPinned)
-                if (move) {
-                    this.sort()
-                }
+                // if (move) {
+                //     this.sort()
+                // }
                 return move;
             },
             formatDate(dateStr) {
@@ -79,8 +81,24 @@
                 })
             },
             sort() {
-                this.todo_array = this.todo_array
-                console.log('sorted')
+                // this.todo_array = this.todo_array
+                // // var tempTodoList = Vue.util.extend({}, this.todo_array)
+                // var tempTodoList = new Array()
+                // this.todo_array.forEach(function (todo) {
+                //     if (todo.isPinned) {
+                //         tempTodoList.push(todo)
+                //     }
+                // })
+                //
+                // this.todo_array.forEach(function (todo) {
+                //     if (!todo.isPinned) {
+                //         tempTodoList.push(todo)
+                //     }
+                // })
+
+                // this.todo_array = Vue.util.extend({}, tempTodoList)
+                //
+                // console.log('sorted', this.todo_array)
             }
         },
         mounted () {
@@ -126,6 +144,13 @@
                 this.$nextTick(() => {
                     this.delayedDragging = false;
                 });
+            },
+            todo_array(newValue) {
+                for (var i = 0; i < newValue.length; i++) {
+                    newValue[i].order = i+1
+                }
+                // TODO :: update whole todoList to API
+                return newValue
             }
         }
     }
