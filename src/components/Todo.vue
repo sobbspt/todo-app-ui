@@ -8,7 +8,7 @@
                             <i :class="element.isDone? 'fa fa-check-square-o green' : 'fa fa-square-o'" @click="doneHandler(element)" aria-hidden="true"></i>
                             [ {{ formatDate(element.date) }} ]
                             {{element.taskName}}
-                            <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.isPinned = !element.isPinned" aria-hidden="true"></i>
+                            <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click="pinnedHandler(element)" aria-hidden="true"></i>
                         </span>
 
                     </li>
@@ -44,9 +44,11 @@
             onMove({ relatedContext, draggedContext }) {
                 const relatedElement = relatedContext.element;
                 const draggedElement = draggedContext.element;
-                return (
-                    (!relatedElement || !relatedElement.isPinned) && !draggedElement.isPinned
-                );
+                var move = ((!relatedElement || !relatedElement.isPinned) && !draggedElement.isPinned)
+                if (move) {
+                    this.sort()
+                }
+                return move;
             },
             formatDate(dateStr) {
                 var date = new Date(dateStr)
@@ -56,12 +58,29 @@
                 todo.isDone = !todo.isDone
                 this.updateTodo(todo)
             },
+            pinnedHandler(todo) {
+                todo.isPinned = !todo.isPinned
+                this.updateTodo(todo)
+            },
             updateTodo(todo) {
                 api.put('/api/v1/users/' + this.userId + '/todos/' + todo.id, todo, { headers: {  } }).then(response => {
                     console.log(response.data)
                 }, (error) => {
                     alert('Cannot update')
                 })
+            },
+            getTodoList() {
+                var vm = this
+                api.get('/api/v1/users/' + this.userId + '/todos', { headers: { 'Authorization': 'Bearer ' + VueCookie.get('access_token') } }).then((response) => {
+                    vm.todo_array = response.data.data
+                }, (error) => {
+                    console.log(error)
+                    alert('Cannot get todo list')
+                })
+            },
+            sort() {
+                this.todo_array = this.todo_array
+                console.log('sorted')
             }
         },
         mounted () {
@@ -74,12 +93,7 @@
                         vm.name = response.data.displayName
                         vm.profile_image = response.data.pictureUrl
                         vm.userId = response.data.userId
-                        api.get('/api/v1/users/' + this.userId + '/todos', { headers: { 'Authorization': 'Bearer ' + VueCookie.get('access_token') } }).then((response) => {
-                            vm.todo_array = response.data.data
-                        }, (error) => {
-                            console.log(error)
-                            alert('Cannot get todo list')
-                        })
+                        vm.getTodoList()
                     }
                 }, (error) => {
                     console.log(error)
