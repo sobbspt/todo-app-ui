@@ -1,40 +1,73 @@
 <template>
-    <div class="todo">
-        <h1>Hi {{ name }}</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ali...</p>
+    <div class="fluid container">
+        <div class="col-md-12">
+            <draggable class="list-group" element="ul" v-model="todo_array" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
+                <transition-group type="transition" :name="'flip-list'">
+                    <li class="list-group-item" v-for="element in todo_array" :key="element.order">
+                        <i :class="element.isDone? 'fa fa-check-square-o' : 'fa fa-square-o'" @click=" element.isDone=! element.isDone" aria-hidden="true"></i>
+                        {{element.taskName}}
+                        <span class="badge">{{element.order}}</span>
+                        {{ element }}
+                        <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.isPinned=! element.isPinned" aria-hidden="true"></i>
+                    </li>
+                </transition-group>
+            </draggable>
+        </div>
     </div>
 </template>
 
 <script>
     import VueCookie from 'cookie-in-vue'
     import lineapi from '../services/lineapi'
+    import draggable from 'vuedraggable'
+    import api from "../services/api";
 
     export default {
         name: 'todo',
         data: () => {
             return {
                 name: '',
-                profile_image: ''
+                profile_image: '',
+                userId: '',
+                todo_array: [],
+                editable: true,
+                isDragging: false,
+                delayedDragging: false
             }
         },
+        components: {
+            draggable
+        },
         methods: {
-            getProfile () {
-                lineapi.get('/profile', { headers: { 'Authorization': 'Bearer ' + VueCookie.get('access_token') } }).then((response) => {
-                    if (response.status === 200) {
-                        console.log('user profile', response.data)
-                        this.name = response.data.displayName
-                        this.profile_image = response.data.pictureUrl
-                    }
-                }, (error) => {
-                    console.log(error)
-                    alert()
-                })
+            onMove({ relatedContext, draggedContext }) {
+                const relatedElement = relatedContext.element;
+                const draggedElement = draggedContext.element;
+                return (
+                    (!relatedElement || !relatedElement.isPinned) && !draggedElement.isPinned
+                );
             }
         },
         mounted () {
+            var vm = this
             console.log('This is ToDo component')
             if (VueCookie.get('access_token')) {
-                this.getProfile()
+                lineapi.get('/profile', { headers: { 'Authorization': 'Bearer ' + VueCookie.get('access_token') } }).then((response) => {
+                    if (response.status === 200) {
+                        console.log('user profile', response.data)
+                        vm.name = response.data.displayName
+                        vm.profile_image = response.data.pictureUrl
+                        vm.userId = response.data.userId
+                        api.get('/api/v1/users/' + this.userId + '/todos', { headers: { 'Authorization': 'Bearer ' + VueCookie.get('access_token') } }).then((response) => {
+                            vm.todo_array = response.data.data
+                        }, (error) => {
+                            console.log(error)
+                            alert('Cannot get todo list')
+                        })
+                    }
+                }, (error) => {
+                    console.log(error)
+                    alert('Cannot get user profile')
+                })
             } else if (VueCookie.get('refresh_token')) {
                 // TODO :: refresh token
                 console.log('Has refresh_token')
@@ -42,10 +75,49 @@
                 console.log('No token')
                 this.$router.push('/login')
             }
+        },
+        computed: {
+            dragOptions() {
+                return {
+                    animation: 0,
+                    group: "description",
+                    disabled: !this.editable,
+                    ghostClass: "ghost"
+                };
+            }
+        },
+        watch: {
+            isDragging(newValue) {
+                if (newValue) {
+                    this.delayedDragging = true;
+                    return;
+                }
+                this.$nextTick(() => {
+                    this.delayedDragging = false;
+                });
+            }
         }
     }
 </script>
 
 <style>
-
+    .flip-list-move {
+        transition: transform 0.5s;
+    }
+    .no-move {
+        transition: transform 0s;
+    }
+    .ghost {
+        opacity: 0.5;
+        background: #c8ebfb;
+    }
+    .list-group {
+        min-height: 20px;
+    }
+    .list-group-item {
+        cursor: move;
+    }
+    .list-group-item i {
+        cursor: pointer;
+    }
 </style>

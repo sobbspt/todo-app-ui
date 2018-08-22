@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/todo">Todo</router-link>
-    </nav>
+    <!--<nav>-->
+      <!--<router-link to="/todo">Todo</router-link>-->
+    <!--</nav>-->
+    <h1>To-Do App</h1>
     <router-view/>
   </div>
 </template>
+
 
 <script>
 export default {
   name: 'app'
 }
 </script>
+
 
 <style>
 #app {
