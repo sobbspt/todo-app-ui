@@ -1,5 +1,7 @@
 # todo-ui
 
+Simple To-Do application build with LINE Web Login. This must be used with my todo-app-api
+
 ## Project setup
 ```
 yarn install
@@ -7,15 +9,15 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn run serve
+yarn serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn run build
+yarn build
 ```
 
-### Lints and fixes files
+### Deploy to Firebase
 ```
-yarn run lint
+firebase deploy
 ```
