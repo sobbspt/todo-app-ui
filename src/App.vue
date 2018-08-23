@@ -4,6 +4,7 @@
       <!--<router-link to="/todo">Todo</router-link>-->
     <!--</nav>-->
     <h1>To-Do App</h1>
+    <img src="https://obs.line-scdn.net/0h3lWwiRijbENqDkFaj5YTFEtTZyFZbHJISGgkJEwIMHZFNi57Vm0jJUgNNXBDNyNHVTp2JyEOOiEXPCMUVC0iLBxdMyQUaQ/f256x256"/>
     <router-view/>
   </div>
 </template>
