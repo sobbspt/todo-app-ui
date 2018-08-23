@@ -1,19 +1,31 @@
 <template>
     <div class="todo">
-        <h1>This is an callback page {{ message }}</h1>
+        <div class="overlay-dukdik" v-if="loading">
+            <div class="loading-dukdik">
+                <sync-loader :color=spinner.color></sync-loader>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import VueCookie from 'cookie-in-vue'
     import api from '../services/api'
+    import SyncLoader from 'vue-spinner/src/SyncLoader.vue'
 
     export default {
         name: 'callback',
         data: () => {
             return {
-                'code': ''
+                'code': '',
+                spinner: {
+                    color: '#20a8d8'
+                },
+                loading: true
             }
+        },
+        components: {
+            'SyncLoader': SyncLoader
         },
         methods: {
 
@@ -45,5 +57,20 @@
 </script>
 
 <style>
+    .overlay-dukdik {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 0.7;
+        top: 0;
+        left: 0;
+        background-color: #000000;
+    }
 
+    .loading-dukdik {
+        position: absolute;
+        top: 50%;
+        left: 50%
+    }
 </style>
