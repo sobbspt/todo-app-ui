@@ -1,6 +1,6 @@
 <template>
     <div class="todo">
-        <h1>This is an login page {{ message }}</h1>
+        <h1>Redirecting to LINE Login</h1>
     </div>
 </template>
 

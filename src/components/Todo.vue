@@ -6,10 +6,9 @@
                     <li class="list-group-item" v-for="element in todo_array" :key="element.id">
                         <span>
                             <i :class="element.isDone? 'fa fa-check-square-o green' : 'fa fa-square-o'" @click="element.isDone = !element.isDone" aria-hidden="true"></i>
+                            <i :class="element.isPinned? 'glyphicon glyphicon-pushpin red' : 'glyphicon glyphicon-pushpin light-gray '" @click="element.isPinned = !element.isPinned" aria-hidden="true"></i>
                             [ {{ formatDate(element.date) }} ]
                             {{element.taskName}}
-                            <i :class="element.isPinned? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click="element.isPinned = !element.isPinned" aria-hidden="true"></i>
-                            {{element.order}}
                         </span>
 
                     </li>
@@ -166,11 +165,19 @@
     }
     .list-group-item {
         cursor: move;
+        text-align: left;
     }
     .list-group-item i {
         cursor: pointer;
+        padding: 10px;
     }
     .green {
         color: #079100;
+    }
+    .red {
+        color: #ff0000;
+    }
+    .light-gray {
+        color: #97949a;
     }
 </style>

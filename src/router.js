@@ -10,6 +10,10 @@ export default new Router({
     mode: 'history',
     routes: [
         {
+            path: '',
+            redirect: '/todo'
+        },
+        {
             path: '/todo',
             name: 'todo',
             component: Todo
