@@ -1,6 +1,14 @@
 <template>
     <div class="fluid container">
         <div class="col-md-12">
+
+            <div id="user-info">
+                <span>
+                    <img :src="profile_image" style="border-radius: 50%; width: 100px; padding: 10px; text-align: left"/>
+                    {{ name }}
+                </span>
+            </div>
+
             <draggable class="list-group" element="ul" v-model="todo_array" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
                 <transition-group type="transition" :name="'flip-list'">
                     <li class="list-group-item" v-for="element in todo_array" :key="element.id">
