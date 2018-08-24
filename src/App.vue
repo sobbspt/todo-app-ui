@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <!--<nav>-->
-      <!--<router-link to="/todo">Todo</router-link>-->
-    <!--</nav>-->
-    <h1>To-Do App</h1>
+    <h1>TODO Mate</h1>
     <img width="100px" style="padding: 10px" src="https://obs.line-scdn.net/0h3lWwiRijbENqDkFaj5YTFEtTZyFZbHJISGgkJEwIMHZFNi57Vm0jJUgNNXBDNyNHVTp2JyEOOiEXPCMUVC0iLBxdMyQUaQ/f256x256"/>
     <router-view/>
   </div>
