@@ -9,6 +9,10 @@
                 </span>
             </div>
 
+            <div v-show="todo_array.length === 0" id="not-found-todo">
+                You don't have any TODO, please create with your LINE
+            </div>
+
             <draggable class="list-group" element="ul" v-model="todo_array" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
                 <transition-group type="transition" :name="'flip-list'">
                     <li class="list-group-item" v-for="element in todo_array" :key="element.id">
@@ -64,6 +68,9 @@
                 return date.toDateString() + ' ' + date.toLocaleTimeString()
             },
             updateTodo(todoList) {
+                if (todoList.length === 0) {
+                    return
+                }
                 api.put('/api/v1/users/' + this.userId + '/todos', todoList, { headers: {  } }).then(response => {
                     console.log(response.data)
                 }, (error) => {
